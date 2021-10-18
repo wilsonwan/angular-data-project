@@ -38,22 +38,16 @@ export class ProductsGridComponent {
         debounceTime(400)
       )
       .subscribe(() => {
-        console.log(this.searchText);
-
         this.filteredProducts = this.performFilter();
       });
 
     fromEvent(document.getElementById('brands'), 'change')
       .subscribe(() => {
-        console.log(this.selectedBrand);
-
         this.filteredProducts = this.performFilter();
     })
 
     fromEvent(document.getElementById('stockOption'), 'change')
     .subscribe(() => {
-      console.log(this.selectedStockOption);
-
       this.filteredProducts = this.performFilter();
     })
   }
