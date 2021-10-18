@@ -13,12 +13,15 @@ export class AppComponent {
   title = "ir-dev-test";
   searchText: string;
   selectedBrand: string;
+  selectedStockOption: string;
   brands: string[] = [];
   sub!: Subscription;
 
   constructor(private _service: ProductsService) { }
 
   ngOnInit(): void {
+    this.selectedStockOption = "all";
+
     this.sub = this._service.getProducts().subscribe({
       next: products => {
         this.brands.push("");

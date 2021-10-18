@@ -124,17 +124,17 @@
         </option>
       </select>
     </div>
-    <div class="filter">
-      <label for="in-stock">All</label>
-      <input type="radio" id="in-stock" name="stock" value="all" checked>
+    <div class="filter" id="stockOption">
+      <label for="all">All</label>
+      <input type="radio" id="all" name="stock" value="all" [(ngModel)]="selectedStockOption">
       <label for="in-stock">In stock</label>
-      <input type="radio" id="in-stock" name="stock" value="in-stock">
+      <input type="radio" id="in-stock" name="stock" value="in-stock" [(ngModel)]="selectedStockOption">
       <label for="out-of-stock">Out of stock</label>
-      <input type="radio" id="out-of-stock" name="stock" value="out-of-stock">
+      <input type="radio" id="out-of-stock" name="stock" value="out-of-stock" [(ngModel)]="selectedStockOption">
     </div>
   </div>
   <div class="container">
-    <products-table [searchText]="searchText" [selectedBrand]="selectedBrand">
+    <products-table [searchText]="searchText" [selectedBrand]="selectedBrand" [selectedStockOption]="selectedStockOption">
     </products-table>
   </div>
 </div>

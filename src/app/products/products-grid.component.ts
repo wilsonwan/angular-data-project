@@ -18,6 +18,7 @@ export class ProductsGridComponent {
 
   @Input() searchText: string;
   @Input() selectedBrand: string;
+  @Input() selectedStockOption: string;
 
   constructor(private _service: ProductsService) { }
 
@@ -31,13 +32,14 @@ export class ProductsGridComponent {
   }
 
   ngAfterViewInit(): void {
-    // need a better target as document is too broad
-    fromEvent(document, 'keyup')
+    fromEvent(document.getElementById('search'), 'keyup')
       .pipe(
         filter(Boolean),
         debounceTime(400)
       )
       .subscribe(() => {
+        console.log(this.searchText);
+
         if (this.searchText.length >= 3) {
           this.filteredProducts = this.searchText ? this.performSearchFilter(this.searchText) : this.products;
         } else {
@@ -45,7 +47,7 @@ export class ProductsGridComponent {
         }
       });
 
-      fromEvent(document, 'change')
+      fromEvent(document.getElementById('brands'), 'change')
         .subscribe(() => {
           console.log(this.selectedBrand);
 
@@ -55,10 +57,31 @@ export class ProductsGridComponent {
             this.filteredProducts = this.performDropdownFilter(this.selectedBrand);
           }
       })
+
+      fromEvent(document.getElementById('stockOption'), 'change')
+      .subscribe(() => {
+        console.log(this.selectedStockOption);
+
+        this.filteredProducts = this.performStockOptionFilter(this.selectedStockOption);
+      })
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  performStockOptionFilter(filterBy: string): IProduct[] {
+    switch(filterBy) {
+      case "all": {
+        return this.filteredProducts = this.products;
+      }
+      case "in-stock": {
+        return this.filteredProducts = this.products.filter(product => product.quantity > 0);
+      }
+      case "out-of-stock": {
+        return this.filteredProducts = this.products.filter(product => product.quantity == 0);
+      }
+    }
   }
 
   performDropdownFilter(filterBy: string): IProduct[] {
