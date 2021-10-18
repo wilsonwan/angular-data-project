@@ -40,34 +40,33 @@ export class ProductsGridComponent {
       .subscribe(() => {
         console.log(this.searchText);
 
-        if (this.searchText.length >= 3) {
-          this.filteredProducts = this.searchText ? this.performSearchFilter(this.searchText) : this.products;
-        } else {
-          this.filteredProducts = this.products;
-        }
+        this.filteredProducts = this.performFilter();
       });
 
-      fromEvent(document.getElementById('brands'), 'change')
-        .subscribe(() => {
-          console.log(this.selectedBrand);
-
-          if (this.selectedBrand == "") {
-            this.filteredProducts = this.products;
-          } else {
-            this.filteredProducts = this.performDropdownFilter(this.selectedBrand);
-          }
-      })
-
-      fromEvent(document.getElementById('stockOption'), 'change')
+    fromEvent(document.getElementById('brands'), 'change')
       .subscribe(() => {
-        console.log(this.selectedStockOption);
+        console.log(this.selectedBrand);
 
-        this.filteredProducts = this.performStockOptionFilter(this.selectedStockOption);
-      })
+        this.filteredProducts = this.performFilter();
+    })
+
+    fromEvent(document.getElementById('stockOption'), 'change')
+    .subscribe(() => {
+      console.log(this.selectedStockOption);
+
+      this.filteredProducts = this.performFilter();
+    })
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  performFilter(): IProduct[] {
+    return this.intersectProductArrays(
+      !!this.searchText ? this.performSearchFilter(this.searchText) : this.products,
+      !!this.selectedBrand ? this.performDropdownFilter(this.selectedBrand) : this.products,
+      !!this.selectedStockOption ? this.performStockOptionFilter(this.selectedStockOption): this.products);
   }
 
   performStockOptionFilter(filterBy: string): IProduct[] {
@@ -87,16 +86,36 @@ export class ProductsGridComponent {
   performDropdownFilter(filterBy: string): IProduct[] {
     filterBy = filterBy.toLocaleLowerCase();
 
-    return this.products.filter((product: IProduct) =>
-      product.brand.toLocaleLowerCase().indexOf(filterBy) !== -1);
+    if (filterBy == "") {
+      this.filteredProducts = this.products;
+    } else {
+      return this.products.filter((product: IProduct) =>
+        product.brand.toLocaleLowerCase().indexOf(filterBy) !== -1);
+    }
   }
 
   performSearchFilter(filterBy: string): IProduct[] {
     filterBy = filterBy.toLocaleLowerCase();
 
-    return this.products.filter((product: IProduct) =>
+    if (filterBy.length >= 3) {
+      return this.products.filter((product: IProduct) =>
       product.description.toLocaleLowerCase().indexOf(filterBy) !== -1
         || product.brand.toLocaleLowerCase().indexOf(filterBy) !== -1
         || product.name.toLocaleLowerCase().indexOf(filterBy) !== -1);
+    } else {
+      return this.filteredProducts = this.products;
+    }
+  }
+
+  intersectProductArrays(searchTextResults: IProduct[], brandResult: IProduct[], stockOptionResult: IProduct[]): IProduct[]{
+    let result: IProduct[];
+
+    const data = [searchTextResults, brandResult, stockOptionResult];
+
+    result = data.reduce((a, b) => a.filter(c => b.includes(c)));
+
+    console.log(result);
+
+    return this.filteredProducts = result;
   }
 }
