@@ -114,7 +114,7 @@
   <div class="container">
     <div class="filter">
       <label for="search">Search</label>
-      <input id="search" />
+      <input id="search" type="text" autocomplete="off" [(ngModel)]="searchText"/>
     </div>
     <div class="filter">
       <label for="brands">Brands</label>
@@ -130,7 +130,7 @@
     </div>
   </div>
   <div class="container">
-    <products-table>
+    <products-table [searchText]="searchText">
     </products-table>
   </div>
 </div>

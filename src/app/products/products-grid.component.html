@@ -21,11 +21,11 @@
       </th>
     </tr>
   </thead>
-  <tbody *ngFor="let product of products">
+  <tbody *ngFor="let product of filteredProducts">
     <td>{{product.id}}</td>
     <td>{{product.name}}</td>
     <td>{{product.brand}}</td>
-    <td>{{product.price}}</td>
+    <td>{{product.price | currency:'GBP':'symbol'}}</td>
     <td>{{product.quantity}}</td>
     <td>{{product.description}}</td>
   </tbody>

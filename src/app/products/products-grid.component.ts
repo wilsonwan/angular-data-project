@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, Input, SimpleChanges } from "@angular/core";
 import { ProductsService } from "./products.service";
 import { IProduct } from "../interfaces/product";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "products-table",
@@ -11,10 +12,37 @@ import { IProduct } from "../interfaces/product";
 
 export class ProductsGridComponent {
   products: IProduct[];
+  filteredProducts: IProduct[];
+  sub!: Subscription;
+
+  @Input() searchText: string;
 
   constructor(private _service: ProductsService) { }
 
-  ngOnInit() {
-    this._service.getProducts().subscribe(products => this.products = products);
+  ngOnInit(): void {
+    this.sub = this._service.getProducts().subscribe({
+      next: products => {
+        this.products = products;
+        this.filteredProducts = this.products;
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+    this.filteredProducts = this.searchText ? this.performSearchFilter(this.searchText) : this.products;
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
+  performSearchFilter(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+
+    return this.products.filter((product: IProduct) =>
+      product.description.toLocaleLowerCase().indexOf(filterBy) !== -1
+        || product.brand.toLocaleLowerCase().indexOf(filterBy) !== -1
+        || product.name.toLocaleLowerCase().indexOf(filterBy) !== -1);
   }
 }
