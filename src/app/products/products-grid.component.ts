@@ -29,8 +29,11 @@ export class ProductsGridComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
-    this.filteredProducts = this.searchText ? this.performSearchFilter(this.searchText) : this.products;
+    if (this.searchText.length >= 3) {
+      this.filteredProducts = this.searchText ? this.performSearchFilter(this.searchText) : this.products;
+    } else {
+      this.filteredProducts = this.products;
+    }
   }
 
   ngOnDestroy(): void {
