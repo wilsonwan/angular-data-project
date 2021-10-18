@@ -118,7 +118,11 @@
     </div>
     <div class="filter">
       <label for="brands">Brands</label>
-      <select id="brands"> </select>
+      <select id="brands" [(ngModel)]="selectedBrand">
+        <option *ngFor="let brand of brands" [value]="brand">
+          {{brand}}
+        </option>
+      </select>
     </div>
     <div class="filter">
       <label for="in-stock">All</label>
@@ -130,7 +134,7 @@
     </div>
   </div>
   <div class="container">
-    <products-table [searchText]="searchText">
+    <products-table [searchText]="searchText" [selectedBrand]="selectedBrand">
     </products-table>
   </div>
 </div>

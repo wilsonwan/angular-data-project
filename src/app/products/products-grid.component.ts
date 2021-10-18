@@ -17,6 +17,7 @@ export class ProductsGridComponent {
   sub!: Subscription;
 
   @Input() searchText: string;
+  @Input() selectedBrand: string;
 
   constructor(private _service: ProductsService) { }
 
@@ -29,7 +30,7 @@ export class ProductsGridComponent {
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     // need a better target as document is too broad
     fromEvent(document, 'keyup')
       .pipe(
@@ -43,10 +44,28 @@ export class ProductsGridComponent {
           this.filteredProducts = this.products;
         }
       });
+
+      fromEvent(document, 'change')
+        .subscribe(() => {
+          console.log(this.selectedBrand);
+
+          if (this.selectedBrand == "") {
+            this.filteredProducts = this.products;
+          } else {
+            this.filteredProducts = this.performDropdownFilter(this.selectedBrand);
+          }
+      })
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  performDropdownFilter(filterBy: string): IProduct[] {
+    filterBy = filterBy.toLocaleLowerCase();
+
+    return this.products.filter((product: IProduct) =>
+      product.brand.toLocaleLowerCase().indexOf(filterBy) !== -1);
   }
 
   performSearchFilter(filterBy: string): IProduct[] {
