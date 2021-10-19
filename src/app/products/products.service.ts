@@ -68,7 +68,6 @@ export class ProductsService {
   }
 
   public getWithLatestQuantity() {
-    //Update this logic to pass the failing test
     let results: IProduct[];
     this.getProducts().subscribe({
       next: products => {

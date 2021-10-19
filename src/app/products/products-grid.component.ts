@@ -108,8 +108,6 @@ export class ProductsGridComponent {
 
     result = data.reduce((a, b) => a.filter(c => b.includes(c)));
 
-    console.log(result);
-
     return this.filteredProducts = result;
   }
 }
