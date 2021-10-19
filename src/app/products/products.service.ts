@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { of, combineLatest} from "rxjs";
 import { map } from "rxjs/operators";
+import { IProduct } from "../interfaces/product";
 
 @Injectable()
 export class ProductsService {
@@ -68,8 +69,14 @@ export class ProductsService {
 
   public getWithLatestQuantity() {
     //Update this logic to pass the failing test
+    let results: IProduct[];
+    this.getProducts().subscribe({
+      next: products => {
+        results = products;
+      }
+    })
     return combineLatest([
-      getProduct,
+      results,
       getQuantity]
     )
       .pipe(map(result => {
@@ -79,5 +86,4 @@ export class ProductsService {
   }
 }
 
-const getProduct = of("product1");
-const getQuantity = of(2, 8);
+const getQuantity = of(8);
